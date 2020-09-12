@@ -15,60 +15,75 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<service role="SUPERSET" name="superset" version="0.36.0">
+<service role="SUPERSET" name="analytics" version="0.36.0">
     <routes>
 
-        <route path="superset/static/**">
+        <route path="analytics/static/**">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/superset">
+        <route path="/analytics">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/superset/**">
+        <route path="/analytics/api/**">
+            <rewrite apply="SUPERSET/superset/inbound/api" to="request.url"/>
+            <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
+            <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
+        </route>
+        <route path="/analytics/superset/sqllab">
+            <rewrite apply="SUPERSET/superset/inbound/sqllab" to="request.url"/>
+            <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
+            <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
+        </route>
+        <route path="/analytics/superset/sqllab/**">
+            <rewrite apply="SUPERSET/superset/inbound/sqllab" to="request.url"/>
+            <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
+            <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
+        </route>
+        <route path="/analytics/**">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/databaseview">
+        <route path="/analytics/databaseview">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/databaseview/**">
+        <route path="/analytics/databaseview/**">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/chart">
+        <route path="/analytics/chart">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/chart/**">
+        <route path="/analytics/chart/**">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/dashboard">
+        <route path="/analytics/dashboard">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/dashboard/**">
+        <route path="/analytics/dashboard/**">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/profile">
+        <route path="/analytics/profile">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
-        <route path="/profile/**">
+        <route path="/analytics/profile/**">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>

@@ -65,7 +65,7 @@ public class SupersetDispatcher extends PassAllHeadersDispatch {
 
     private void rewriteHtml(HttpServletRequest request, GatewayResponseWrapper response, InputStream stream) throws IOException {
         try {
-            String contextPath = request.getContextPath().concat("/superset");
+            String contextPath = request.getContextPath().concat("/analytics");
             final InputStream unFilteredStream;
             BufferedInputStream bufferedInputStream = new BufferedInputStream(stream, STREAM_BUFFER_SIZE);
             boolean isGzip = isGzip(bufferedInputStream);
