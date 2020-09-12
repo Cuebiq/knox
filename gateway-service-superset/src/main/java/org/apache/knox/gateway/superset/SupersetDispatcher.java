@@ -23,6 +23,8 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.ReaderInputStream;
 import org.apache.commons.text.StringEscapeUtils;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.client.methods.RequestBuilder;
 import org.apache.knox.gateway.dispatch.PassAllHeadersDispatch;
 import org.apache.knox.gateway.filter.GatewayResponse;
 import org.apache.knox.gateway.filter.GatewayResponseWrapper;
@@ -62,6 +64,27 @@ public class SupersetDispatcher extends PassAllHeadersDispatch {
             }
         }
     }
+
+//    @Override
+//    protected void executeRequest(HttpUriRequest outboundRequest, HttpServletRequest inboundRequest,
+//                                  HttpServletResponse outboundResponse) throws IOException {
+//        // partial workaround for KNOX-799
+//        outboundRequest = fixTrailingSlash(outboundRequest, inboundRequest);
+//        super.executeRequest(outboundRequest, inboundRequest, outboundResponse);
+//    }
+//
+//    public static HttpUriRequest fixTrailingSlash(HttpUriRequest outboundRequest,
+//                                                  HttpServletRequest inboundRequest) {
+//        // preserve trailing slash from inbound request in the outbound request
+//        if (inboundRequest.getPathInfo().endsWith("/")) {
+//            String[] split = outboundRequest.getURI().toString().split("\\?");
+//            if (!split[0].endsWith("/")) {
+//                outboundRequest = RequestBuilder.copy(outboundRequest)
+//                        .setUri(split[0] + "/" + (split.length == 2 ? "?" + split[1] : "/")).build();
+//            }
+//        }
+//        return outboundRequest;
+//    }
 
     private void rewriteHtml(HttpServletRequest request, GatewayResponseWrapper response, InputStream stream) throws IOException {
         try {
@@ -146,6 +169,7 @@ public class SupersetDispatcher extends PassAllHeadersDispatch {
                 rewriteNode(jsonNode, "$..user_info_url", "user_info_url");
                 rewriteNode(jsonNode, "$..user_login_url", "user_login_url");
                 rewriteNode(jsonNode, "$..user_logout_url", "user_logout_url");
+                rewriteNode(jsonNode, "$..brand.path", "path");
                 return jsonNode.toString();
             } catch (IOException e) {
                 e.printStackTrace();
