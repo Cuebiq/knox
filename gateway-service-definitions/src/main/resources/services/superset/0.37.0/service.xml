@@ -17,7 +17,18 @@
 -->
 <service role="SUPERSET" name="analytics" version="0.36.0">
     <routes>
-
+        <route path="analytics/login">
+            <rewrite apply="SUPERSET/superset/inbound/login" to="request.url"/>
+            <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
+            <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
+            <rewrite apply="SUPERSET/superset/headers/login" to="request.headers"/>
+        </route>
+        <route path="analytics/login/**">
+            <rewrite apply="SUPERSET/superset/inbound/login" to="request.url"/>
+            <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
+            <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
+            <rewrite apply="SUPERSET/superset/headers/login" to="request.headers"/>
+        </route>
         <route path="analytics/static/**">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
@@ -59,12 +70,12 @@
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
         <route path="/analytics/chart">
-            <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
+            <rewrite apply="SUPERSET/superset/inbound/chart" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
         <route path="/analytics/chart/**">
-            <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
+            <rewrite apply="SUPERSET/superset/inbound/chart" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>

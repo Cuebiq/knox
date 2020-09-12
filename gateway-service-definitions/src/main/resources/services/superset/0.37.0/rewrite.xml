@@ -25,32 +25,55 @@
             <rewrite template="{$serviceUrl[SUPERSET]}/api/{**}?{**}"/>
         </match>
     </rule>
-    <rule dir="IN" name="SUPERSET/superset/inbound" flow="OR">
 
-        <match pattern="*://*:*/*/*/analytics/{path=**}/welcome?{**}">
-            <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}/welcome?{**}"/>
-        </match>
 
+    <rule dir="IN" name="SUPERSET/superset/inbound/login" flow="OR">
         <match pattern="*://*:*/*/*/analytics/login/?{**}">
             <rewrite template="{$serviceUrl[SUPERSET]}/login/?{**}"/>
         </match>
         <match pattern="*://*:*/*/*/analytics/login">
             <rewrite template="{$serviceUrl[SUPERSET]}/login"/>
         </match>
+    </rule>
 
-        <match pattern="*://*:*/*/*/analytics/{path=**}/?{**}">
-            <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}/?{**}"/>
+    <!-- response headers rules -->
+    <filter name="SUPERSET/superset/headers/login">
+        <content type="application/x-http-headers">
+            <apply path="Referer" rule="SUPERSET/superset/headers/login/inbound"/>
+            <apply path="Origin" rule="SUPERSET/superset/headers/login/inbound"/>
+        </content>
+    </filter>
+    <rule dir="IN" name="SUPERSET/superset/headers/login/inbound" flow="OR">
+        <match pattern="*://*:*/**/analytics/{**}?{**}">
+            <rewrite template="{$serviceUrl[SUPERSET]}/{**}/?{**}"/>
         </match>
-        <match pattern="*://*:*/*/*/analytics/{path=**}?{**}">
-            <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}?{**}"/>
+        <match pattern="*://*:*/">
+            <rewrite template="{$serviceUrl[SUPERSET]}"/>
         </match>
+    </rule>
 
-        <match pattern="*://*:*/*/*/analytics/{path=**}">
-            <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}"/>
-        </match>
+
+    <rule dir="IN" name="SUPERSET/superset/inbound" flow="OR">
         <match pattern="*://*:*/*/*/analytics">
             <rewrite template="{$serviceUrl[SUPERSET]}"/>
         </match>
+        <match pattern="*://*:*/*/*/analytics/{path=**}/welcome?{**}">
+            <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}/welcome?{**}"/>
+        </match>
+
+        <match pattern="*://*:*/*/*/analytics/{path=**}/list/?{**}">
+            <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}/list/?{**}"/>
+        </match>
+        <match pattern="*://*:*/*/*/analytics/{path=**}/add">
+            <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}/add"/>
+        </match>
+        <match pattern="*://*:*/*/*/analytics/{path=**}/add?{**}">
+            <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}/add?{**}"/>
+        </match>
+        <match pattern="*://*:*/*/*/analytics/{path=**}">
+            <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}"/>
+        </match>
+
     </rule>
 
     <rule dir="IN" name="SUPERSET/superset/inbound/sqllab" flow="OR">
@@ -59,6 +82,21 @@
         </match>
         <match pattern="*://*:*/*/*/analytics/superset/sqllab/{path=**}?{**}">
             <rewrite template="{$serviceUrl[SUPERSET]}/superset/sqllab/{path=**}/?{**}"/>
+        </match>
+    </rule>
+
+    <rule dir="IN" name="SUPERSET/superset/inbound/chart" flow="OR">
+        <match pattern="*://*:*/*/*/analytics/chart/list/">
+            <rewrite template="{$serviceUrl[SUPERSET]}/chart/list/"/>
+        </match>
+        <match pattern="*://*:*/*/*/analytics/chart/add">
+            <rewrite template="{$serviceUrl[SUPERSET]}/chart/add"/>
+        </match>
+        <match pattern="*://*:*/*/*/analytics/chart/{path=**}/?{**}">
+            <rewrite template="{$serviceUrl[SUPERSET]}/chart/{path=**}/?{**}"/>
+        </match>
+        <match pattern="*://*:*/*/*/analytics/chart/{path=**}?{**}">
+            <rewrite template="{$serviceUrl[SUPERSET]}/chart/{path=**}?{**}"/>
         </match>
     </rule>
 
@@ -72,11 +110,41 @@
         <match pattern="/chart/{**}">
             <rewrite template="{$frontend[path]}/analytics/chart/{**}"/>
         </match>
+        <match pattern="/databaseview/{**}">
+            <rewrite template="{$frontend[path]}/analytics/databaseview/{**}"/>
+        </match>
         <match pattern="/dashboard/{**}">
             <rewrite template="{$frontend[path]}/analytics/dashboard/{**}"/>
         </match>
         <match pattern="/tablemodelview/{**}">
             <rewrite template="{$frontend[path]}/analytics/tablemodelview/{**}"/>
+        </match>
+        <match pattern="/annotationlayermodelview/{**}">
+            <rewrite template="{$frontend[path]}/analytics/annotationlayermodelview/{**}"/>
+        </match>
+        <match pattern="/csstemplatemodelview/{**}">
+            <rewrite template="{$frontend[path]}/analytics/csstemplatemodelview/{**}"/>
+        </match>
+        <match pattern="/queryview/{**}">
+            <rewrite template="{$frontend[path]}/analytics/queryview/{**}"/>
+        </match>
+        <match pattern="/logmodelview/{**}">
+            <rewrite template="{$frontend[path]}/analytics/logmodelview/{**}"/>
+        </match>
+        <match pattern="/csvtodatabaseview/{**}">
+            <rewrite template="{$frontend[path]}/analytics/csvtodatabaseview/{**}"/>
+        </match>
+        <match pattern="/users/{**}">
+            <rewrite template="{$frontend[path]}/analytics/users/{**}"/>
+        </match>
+        <match pattern="/roles/{**}">
+            <rewrite template="{$frontend[path]}/analytics/roles/{**}"/>
+        </match>
+        <match pattern="/back">
+            <rewrite template="{$frontend[path]}/analytics/back"/>
+        </match>
+        <match pattern="/sqllab/{**}">
+            <rewrite template="{$frontend[path]}/analytics/sqllab/{**}"/>
         </match>
         <match pattern="/api/{**}">
             <rewrite template="{$frontend[path]}/analytics/api/{**}"/>
@@ -149,6 +217,8 @@
             <apply path="Location" rule="SUPERSET/superset/outbound/headers/location"/>
         </content>
     </filter>
+
+
     <rule dir="OUT" name="SUPERSET/superset/outbound/headers/location" flow="OR">
         <match pattern="*://*:*/{**}/?{**}">
             <rewrite template="{$frontend[path]}/analytics/{**}/?{**}"/>
@@ -159,4 +229,10 @@
 
     </rule>
 
+
+    <!--    &lt;!&ndash; re-write rule for location when SHS redirects to Knox SSO login page &ndash;&gt;-->
+    <!--    <rule dir="OUT" name="SPARKHISTORYUI/sparkhistory/outbound/headers/location/sso">-->
+    <!--        <match pattern="{scheme}://{host}:{port}/{gateway}/{knoxsso}/{api}/{v}/websso?originalUrl={**}"/>-->
+    <!--        <rewrite template="{scheme}://{host}:{port}/{gateway}/{knoxsso}/{api}/{v}/websso?originalUrl={$postfix[url,/sparkhistory/]}"/>-->
+    <!--    </rule>-->
 </rules>
