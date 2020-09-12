@@ -18,9 +18,9 @@
 <service role="SUPERSET" name="superset" version="0.36.0">
     <routes>
 
-        <route path="superset/static/assets/**">
+        <route path="superset/static/**">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
-            <rewrite apply="SUPERSET/superset/outbound/assets" to="response.body"/>
+            <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
         <route path="/superset">
@@ -77,7 +77,7 @@
 
 
     </routes>
-<!--    <dispatch classname="org.apache.knox.gateway.dispatch.PassAllHeadersDispatch"/>-->
+    <!--    <dispatch classname="org.apache.knox.gateway.dispatch.PassAllHeadersDispatch"/>-->
     <dispatch classname="org.apache.knox.gateway.superset.SupersetDispatcher"/>
 
 </service>

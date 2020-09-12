@@ -143,6 +143,9 @@ public class SupersetDispatcher extends PassAllHeadersDispatch {
                 JsonNode jsonNode = objectMapper.readTree(new StringReader(json));
                 rewriteNode(jsonNode, "$..url", "url");
                 rewriteNode(jsonNode, "$..brand.icon", "icon");
+                rewriteNode(jsonNode, "$..user_info_url", "user_info_url");
+                rewriteNode(jsonNode, "$..user_login_url", "user_login_url");
+                rewriteNode(jsonNode, "$..user_logout_url", "user_logout_url");
                 return jsonNode.toString();
             } catch (IOException e) {
                 e.printStackTrace();
