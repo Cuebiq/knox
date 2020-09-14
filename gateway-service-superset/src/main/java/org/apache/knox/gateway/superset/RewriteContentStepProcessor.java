@@ -22,6 +22,7 @@ import org.apache.knox.gateway.filter.rewrite.spi.UrlRewriteStepProcessor;
 import org.apache.knox.gateway.filter.rewrite.spi.UrlRewriteStepStatus;
 import org.apache.knox.gateway.filter.rewrite.spi.UrlRewriteStreamFilter;
 import org.apache.knox.gateway.service.definition.ServiceDefinitionPair;
+import org.apache.knox.gateway.services.GatewayServices;
 import org.apache.knox.gateway.services.ServiceType;
 import org.apache.knox.gateway.services.registry.ServiceDefEntry;
 import org.apache.knox.gateway.services.registry.ServiceDefinitionRegistry;
@@ -60,13 +61,17 @@ public class RewriteContentStepProcessor implements UrlRewriteStepProcessor<Rewr
         this.environment = environment;
         urlRewriteProcessor = new UrlRewriteProcessor();
 
+
+
         ServiceDefinitionRegistry serviceRegistry = GatewayServer.getGatewayServices().getService(ServiceType.SERVICE_DEFINITION_REGISTRY);
         Set<ServiceDefinitionPair> serviceDefinitions = serviceRegistry.getServiceDefinitions();
+
         Optional<ServiceDefinitionPair> superset = serviceDefinitions.stream().filter(serviceDefinitionPair -> serviceDefinitionPair.getService().getRole().equals("SUPERSET")).findFirst();
         if(superset.isPresent())
         {
             UrlRewriteRulesDescriptor rewriteRules = superset.get().getRewriteRules();
 
+            
             UrlRewriteRulesDescriptorImpl contextUrlRewriteRulesDescriptor = new UrlRewriteRulesDescriptorImpl();
 
             List<UrlRewriteRuleDescriptor> filteredRules = rewriteRules.getRules().stream()
@@ -78,8 +83,11 @@ public class RewriteContentStepProcessor implements UrlRewriteStepProcessor<Rewr
 
             filteredRules.forEach(urlRewriteRuleDescriptor -> contextUrlRewriteRulesDescriptor.addRule(urlRewriteRuleDescriptor));
             rewriteRules.getFilters().forEach(urlRewriteFilterDescriptor -> contextUrlRewriteRulesDescriptor.addFilter(urlRewriteFilterDescriptor));
+            rewriteRules.getFunctions().forEach(urlRewriteFunctionDescriptor -> contextUrlRewriteRulesDescriptor.addFunction(urlRewriteFunctionDescriptor.name()));
+
 
             urlRewriteProcessor.initialize(environment,contextUrlRewriteRulesDescriptor);
+
         }
     }
 
