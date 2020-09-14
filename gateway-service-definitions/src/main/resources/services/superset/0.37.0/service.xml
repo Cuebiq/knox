@@ -54,6 +54,11 @@
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
             <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
         </route>
+        <route path="/analytics/superset/sqllab/search/**">
+            <rewrite apply="SUPERSET/superset/inbound/sqllab" to="request.url"/>
+            <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
+            <rewrite apply="SUPERSET/superset/outbound/headers" to="response.headers"/>
+        </route>
         <route path="/analytics/**">
             <rewrite apply="SUPERSET/superset/inbound" to="request.url"/>
             <rewrite apply="SUPERSET/superset/outbound/link" to="response.body"/>
