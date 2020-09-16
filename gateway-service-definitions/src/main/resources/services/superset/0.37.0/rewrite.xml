@@ -60,7 +60,9 @@
         <match pattern="*://*:*/*/*/analytics/{path=**}/welcome?{**}">
             <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}/welcome?{**}"/>
         </match>
-
+        <match pattern="*://*:*/*/*/analytics/back">
+            <rewrite template="{$serviceUrl[SUPERSET]}/back"/>
+        </match>
         <match pattern="*://*:*/*/*/analytics/{path=**}/list/?{**}">
             <rewrite template="{$serviceUrl[SUPERSET]}/{path=**}/list/?{**}"/>
         </match>
@@ -163,6 +165,9 @@
         <match pattern="/annotationlayermodelview/{**}">
             <rewrite template="{$frontend[path]}/analytics/annotationlayermodelview/{**}"/>
         </match>
+        <match pattern="/savedqueryview/{**}">
+            <rewrite template="{$frontend[path]}/analytics/savedqueryview/{**}"/>
+        </match>
         <match pattern="/csstemplatemodelview/{**}">
             <rewrite template="{$frontend[path]}/analytics/csstemplatemodelview/{**}"/>
         </match>
@@ -210,6 +215,7 @@
             <apply path="(\/api\/v1)?\/chart(\/)?" rule="SUPERSET/superset/outbound/link/js/"/>
             <apply path="(\/api\/v1)?\/dashboard(\/)?" rule="SUPERSET/superset/outbound/link/js/"/>
             <apply path="(\/api\/v1)?\/tablemodelview(\/)?" rule="SUPERSET/superset/outbound/link/js/"/>
+            <apply path="(\/api\/v1)?\/savedqueryview(\/)?" rule="SUPERSET/superset/outbound/link/js/"/>
         </content>
         <content type="text/html" asType="application/javascript">
             <apply path="(\/api\/v1)?\/users(\/)?" rule="SUPERSET/superset/outbound/link/js/"/>
@@ -217,63 +223,93 @@
         </content>
         <content type="text/html">
             <apply path="/.*" rule="SUPERSET/superset/outbound/html"/><!--attribute containing path-->
+            <apply path=".*\/users\/delete.*" rule="SUPERSET/superset/outbound/link/js/delete"/>
+            <apply path=".*\/roles\/delete.*" rule="SUPERSET/superset/outbound/link/js/delete"/>
+            <apply path=".*\/annotationlayermodelview\/delete.*" rule="SUPERSET/superset/outbound/link/js/delete"/>
+            <apply path=".*\/csstemplatemodelview\/delete.*" rule="SUPERSET/superset/outbound/link/js/delete"/>
+            <apply path=".*\/dashboard\/delete.*" rule="SUPERSET/superset/outbound/link/js/delete"/>
+            <apply path=".*\/savedqueryview\/delete.*" rule="SUPERSET/superset/outbound/link/js/delete"/>
+        </content>
+        <content type="application/json" astype="application/json">
+            <apply path="$.**.url" rule="SUPERSET/superset/outbound/html"/>
+            <apply path="$.**.item_url" rule="SUPERSET/superset/outbound/html"/>
+            <apply path="$.**.thumbnail_url" rule="SUPERSET/superset/outbound/html"/>
+            <apply path="$.**.changed_by_url" rule="SUPERSET/superset/outbound/html"/>
         </content>
     </filter>
+
+
+    <rule direction="OUT" name="SUPERSET/superset/outbound/link/js/delete">
+        <rewrite-content contentType="application/javascript" pattern="\/.*\/delete" rule="SUPERSET/superset/outbound/link/js/"/>
+    </rule>
+
+
     <rule dir="OUT" name="SUPERSET/superset/outbound/link/css" pattern="/static/assets/{**}">
         <rewrite template="{$frontend[path]}/analytics/static/assets/{**}"/>
     </rule>
 
     <rule dir="OUT" name="SUPERSET/superset/outbound/link/js/" flow="OR">
-        <match pattern="/api/{**}/">
-            <rewrite template="{$frontend[path]}/analytics/api/{**}/"/>
+        <match pattern="/{**}/">
+            <rewrite template="{$frontend[path]}/analytics/{**}/"/>
         </match>
-        <match pattern="/api/{**}">
-            <rewrite template="{$frontend[path]}/analytics/api/{**}"/>
-        </match>
-        <match pattern="/static/">
-            <rewrite template="{$frontend[path]}/analytics/static/"/>
-        </match>
-        <match pattern="/users/">
-            <rewrite template="{$frontend[path]}/analytics/users/"/>
-        </match>
-        <match pattern="/roles/">
-            <rewrite template="{$frontend[path]}/analytics/roles/"/>
-        </match>
-        <match pattern="/superset/">
-            <rewrite template="{$frontend[path]}/analytics/superset/"/>
-        </match>
-        <match pattern="/chart/">
-            <rewrite template="{$frontend[path]}/analytics/chart/"/>
-        </match>
-        <match pattern="/dashboard/">
-            <rewrite template="{$frontend[path]}/analytics/dashboard/"/>
-        </match>
-        <match pattern="/tablemodelview/">
-            <rewrite template="{$frontend[path]}/analytics/tablemodelview/"/>
-        </match>
-        <match pattern="/static">
-            <rewrite template="{$frontend[path]}/analytics/static"/>
-        </match>
-        <match pattern="/users">
-            <rewrite template="{$frontend[path]}/analytics/users"/>
-        </match>
-        <match pattern="/roles">
-            <rewrite template="{$frontend[path]}/analytics/roles"/>
-        </match>
-        <match pattern="/superset">
-            <rewrite template="{$frontend[path]}/analytics/superset"/>
-        </match>
-        <match pattern="/chart">
-            <rewrite template="{$frontend[path]}/analytics/chart"/>
-        </match>
-        <match pattern="/dashboard">
-            <rewrite template="{$frontend[path]}/analytics/dashboard"/>
-        </match>
-        <match pattern="/tablemodelview">
-            <rewrite template="{$frontend[path]}/analytics/tablemodelview"/>
-        </match>
-
     </rule>
+
+<!--    <rule dir="OUT" name="SUPERSET/superset/outbound/link/js/" flow="OR">-->
+<!--        <match pattern="/api/{**}/">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/api/{**}/"/>-->
+<!--        </match>-->
+<!--        <match pattern="/api/{**}">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/api/{**}"/>-->
+<!--        </match>-->
+<!--        <match pattern="/static/">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/static/"/>-->
+<!--        </match>-->
+<!--        <match pattern="/users/{**}">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/users/{**}"/>-->
+<!--        </match>-->
+<!--        <match pattern="/roles/{**}">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/roles/{**}"/>-->
+<!--        </match>-->
+<!--        <match pattern="/annotationlayermodelview/{**}">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/annotationlayermodelview/{**}"/>-->
+<!--        </match>-->
+<!--        <match pattern="/superset/">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/superset/"/>-->
+<!--        </match>-->
+<!--        <match pattern="/chart/">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/chart/"/>-->
+<!--        </match>-->
+<!--        <match pattern="/dashboard/">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/dashboard/"/>-->
+<!--        </match>-->
+<!--        <match pattern="/tablemodelview/">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/tablemodelview/"/>-->
+<!--        </match>-->
+<!--        <match pattern="/static">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/static"/>-->
+<!--        </match>-->
+<!--        <match pattern="/users">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/users"/>-->
+<!--        </match>-->
+<!--        <match pattern="/roles">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/roles"/>-->
+<!--        </match>-->
+<!--        <match pattern="/annotationlayermodelview">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/annotationlayermodelview"/>-->
+<!--        </match>-->
+<!--        <match pattern="/superset">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/superset"/>-->
+<!--        </match>-->
+<!--        <match pattern="/chart">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/chart"/>-->
+<!--        </match>-->
+<!--        <match pattern="/dashboard">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/dashboard"/>-->
+<!--        </match>-->
+<!--        <match pattern="/tablemodelview">-->
+<!--            <rewrite template="{$frontend[path]}/analytics/tablemodelview"/>-->
+<!--        </match>-->
+<!--    </rule>-->
 
 
     <!-- response headers rules -->
